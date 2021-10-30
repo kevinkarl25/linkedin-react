@@ -7,7 +7,7 @@
 .inputOption:hover {
   background-color: whitesmoke;
   border-radius: 10px;
-  cursor: default;
+  cursor: pointer;
 }
 
 .inputOption > h4 {

@@ -6,6 +6,7 @@ import EventNoteIcon from "@mui/icons-material/EventNote";
 import CalendarViewDayIcon from "@mui/icons-material/CalendarViewDay";
 import ImageIcon from "@mui/icons-material/Image";
 import InputOption from "./InputOption.js";
+import Post from "./Post";
 
 function Feed() {
   // This is some post for my custom LinkedIn App! 😊
@@ -31,6 +32,12 @@ function Feed() {
           />
         </div>
       </div>
+
+      <Post
+        name="Kevin Obispo"
+        description="This is a test"
+        message="Looking pretty damn good!"
+      />
     </div>
   );
 }
