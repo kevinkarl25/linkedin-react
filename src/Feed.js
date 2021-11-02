@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Feed.css";
 import CreateIcon from "@mui/icons-material/Create";
 import SubscriptionsIcon from "@mui/icons-material/Subscriptions";
@@ -7,17 +7,70 @@ import CalendarViewDayIcon from "@mui/icons-material/CalendarViewDay";
 import ImageIcon from "@mui/icons-material/Image";
 import InputOption from "./InputOption.js";
 import Post from "./Post";
+import { db } from "./firebase";
+import {
+  addDoc,
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  serverTimestamp,
+} from "@firebase/firestore";
 
 function Feed() {
   // This is some post for my custom LinkedIn App! 😊
+
+  const [input, setInput] = useState("");
+  const [posts, setPosts] = useState([]);
+
+  useEffect(
+    () =>
+      onSnapshot(
+        query(collection(db, "posts"), orderBy("timestamp", "desc")),
+        (snapshot) =>
+          setPosts(
+            snapshot.docs.map((doc) => ({
+              id: doc.id,
+              data: doc.data(),
+            }))
+          )
+      ),
+    []
+  );
+
+  const sendPost = async (e) => {
+    e.preventDefault();
+
+    const inputToSend = input; // prevents spam, instant UI response.
+    setInput("");
+
+    if (inputToSend.trim().length > 0) {
+      const docRef = await addDoc(collection(db, "posts"), {
+        username: "Kevin Obispo",
+        description: "This is a test",
+        message: inputToSend,
+        photoUrl: "",
+        timestamp: serverTimestamp(),
+      });
+
+      console.log("New post added with ID", docRef.id);
+    }
+  };
+
   return (
     <div className="feed">
       <div className="feed__inputContainer">
         <div className="feed__input">
           <CreateIcon />
           <form action="">
-            <input type="text" />
-            <button type="submit">Send</button>
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              type="text"
+            />
+            <button onClick={sendPost} type="submit">
+              Send
+            </button>
           </form>
         </div>
 
@@ -32,6 +85,19 @@ function Feed() {
           />
         </div>
       </div>
+
+      {/* "data" here is the one we used on snapshot destructuring */}
+      {posts.map(
+        ({ id, data: { username, description, message, photoUrl } }) => (
+          <Post
+            key={id}
+            name={username}
+            description={description}
+            message={message}
+            photoUrl={photoUrl}
+          />
+        )
+      )}
 
       <Post
         name="Kevin Obispo"
