@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import "./Login.css";
 import { auth } from "./firebase";
-import { createUserWithEmailAndPassword, updateProfile } from "@firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "@firebase/auth";
 import { useDispatch } from "react-redux";
+import { login } from "./features/userSlice";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -19,24 +24,42 @@ function Login() {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in
-        updateProfile(userCredential, {
+        updateProfile(userCredential.user, {
           displayName: name,
           photoURL: profilePic,
+        }).then(() => {
+          dispatch(
+            login({
+              email: userCredential.user.email,
+              uid: userCredential.user.uid,
+              displayName: name,
+              photoURL: profilePic,
+            })
+          );
         });
-
-        // ...
-      })
-      .then(() => {
-        
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
+        alert(error);
         // ..
       });
   };
   const loginToApp = (e) => {
     e.preventDefault();
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userAuth) => {
+        dispatch(
+          login({
+            email: userAuth.user.email,
+            uid: userAuth.user.uid,
+            displayName: userAuth.user.displayName,
+            profileUrl: userAuth.user.photoURL,
+          })
+        );
+      })
+      .catch((error) => alert(error));
   };
 
   return (

@@ -7,8 +7,19 @@ import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import ChatIcon from "@mui/icons-material/Chat";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import HeaderOption from "./HeaderOption";
+import { useDispatch, useSelector } from "react-redux";
+import { logout, selectUser } from "./features/userSlice";
+import { signOut } from "@firebase/auth";
+import { auth } from "./firebase";
 
 function Header() {
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
+  const logoutOfApp = () => {
+    dispatch(logout());
+    signOut(auth);
+  };
+
   return (
     <div className="header">
       <div className="header__left">
@@ -30,7 +41,8 @@ function Header() {
         <HeaderOption Icon={ChatIcon} title="Messaging" />
         <HeaderOption Icon={NotificationsIcon} title="Notifications" />
         <HeaderOption
-          avatar="https://drive.google.com/file/d/1vuL5jciMUJNSqqvgMyH52Y8KzFwGICRa/view?usp=sharing"
+          onClick={logoutOfApp}
+          avatar={user ? user.profileUrl : null}
           title="Me"
         />
       </div>
