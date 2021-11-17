@@ -18,6 +18,7 @@ import {
 } from "@firebase/firestore";
 import { useSelector } from "react-redux";
 import { selectUser } from "./features/userSlice";
+import FlipMove from "react-flip-move";
 
 function Feed() {
   const user = useSelector(selectUser);
@@ -90,17 +91,20 @@ function Feed() {
       </div>
 
       {/* "data" here is the one we used on snapshot destructuring */}
-      {posts.map(
-        ({ id, data: { username, description, message, photoUrl } }) => (
-          <Post
-            key={id}
-            name={username}
-            description={description}
-            message={message}
-            photoUrl={photoUrl}
-          />
-        )
-      )}
+      {/* "key" is necessary for FlipMove */}
+      <FlipMove>
+        {posts.map(
+          ({ id, data: { username, description, message, photoUrl } }) => (
+            <Post
+              key={id}
+              name={username}
+              description={description}
+              message={message}
+              photoUrl={photoUrl}
+            />
+          )
+        )}
+      </FlipMove>
 
       {/* <Post
         name="Kevin Obispo"
