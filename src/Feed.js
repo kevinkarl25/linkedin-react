@@ -16,8 +16,11 @@ import {
   query,
   serverTimestamp,
 } from "@firebase/firestore";
+import { useSelector } from "react-redux";
+import { selectUser } from "./features/userSlice";
 
 function Feed() {
+  const user = useSelector(selectUser);
   // This is some post for my custom LinkedIn App! 😊
 
   const [input, setInput] = useState("");
@@ -46,10 +49,10 @@ function Feed() {
 
     if (inputToSend.trim().length > 0) {
       const docRef = await addDoc(collection(db, "posts"), {
-        username: "Kevin Obispo",
-        description: "This is a test",
+        username: user.displayName,
+        description: user.email,
         message: inputToSend,
-        photoUrl: "",
+        photoUrl: user.profileUrl || "",
         timestamp: serverTimestamp(),
       });
 
@@ -99,11 +102,11 @@ function Feed() {
         )
       )}
 
-      <Post
+      {/* <Post
         name="Kevin Obispo"
         description="This is a test"
         message="Looking pretty damn good!"
-      />
+      /> */}
     </div>
   );
 }
