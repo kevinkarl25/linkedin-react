@@ -98,6 +98,7 @@ function Login() {
           Sign In
         </button>
       </form>
+      <p>This is not a REAL app, it is built for portfolio purposes only! ;)</p>
 
       <p>
         Not a member?{" "}
